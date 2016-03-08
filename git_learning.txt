@@ -1,0 +1,186 @@
+安装
+    Linux：
+    	sudo apt-get install git
+    Mac OS X:
+        1.homebrew -> git
+        2.Xcode -> Preferences -> Downloads ->Command Line Tools
+    Windows:
+    	http://msysgit.github.io/
+
+	$ git config --global user.name "Your Name"
+	$ git config --global user.email "email@example.com"
+
+创建版本库
+    $ mkdir learngit
+    $ cd learngit
+    $ pwd
+    $ git init
+
+添加文件进版本库
+	$ git add readme.txt
+	$ git commit -m "wrote a readme file"
+
+查看仓库当前状态
+    $ git status
+
+查看区别
+	$ git diff
+
+查看提交历史
+    $ git log --pretty=oneline
+
+回退到上个版本、上上个、上一百个
+	$ git reset --hard HEAD^(HEAD^^...HEAD~100)
+
+查看命令历史
+	$ git reflog
+
+回退到某一版本,例如3638164...
+	$ git reset --hard 3628164
+
+让文件回到最近一次commit或add状态(可恢复误删文件)
+    $ git checkout -- file
+
+回退暂存区修改到工作区
+ 	$ git reset HEAD file
+
+从版本库中删除文件
+	$ git rm test.txt
+	$ git commit -m "remove test.txt"
+
+远程仓库
+	创建SSH Key
+	    $ ssh-keygen -t rsa -C "email@example.com"
+	将id_rsa.pub内容复制到GitHub
+
+    推送master分支到远程库
+        $ git remote add origin https://github.com/Wingshine/learngit.git
+    	$ git remote add origin git@github.com:Wingshine/learngit.git
+    	$ git push -u origin master(第一次)
+    	$ git push origin master(以后)
+    
+    克隆远程库到本地
+    	$ git clone git@github.com:Wingshine/gitskills.git
+
+分支
+	创建分支
+		$ git branch dev
+
+	创建并切换到新分支
+		$ git checkout -b dev
+
+	查看当前分支
+		$ git branch
+
+	切换分支
+		$ git checkout master
+
+	合并分支(Fast forward)
+		$ git merge dev
+
+	删除分支
+		$ git branch -d dev
+
+	强制删除分支
+		$ git branch -D featrue-vulcan
+
+	查看分支合并图
+	    $ git log --graph --pretty=oneline --abbrev-commit
+
+	    $ git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+
+	合并分支(--no-ff)
+		$ git merge --no-ff -m "merge with no-ff" dev
+
+	保存工作现场
+	    $ git stash
+
+	查看保存的工作现场
+		$ git stash list
+
+	恢复现场不删除stash内容
+		$ git stash apply
+		$ git stash apply stash@{0}
+	恢复现场同时删除stash内容
+		$ git stash pop
+
+查看远程库信息
+	$ git remote
+	$ git remote -v(详细)
+	
+从本地推送分支到远程
+	$ git push origin branch-name
+
+如推送失败，先抓取远程的新提交，与本地合并
+	$ git pull
+
+本地创建与远程分支对应的分支
+	$ git checkout -b branch-name origin/branch-name
+
+建立本地和远程分支的关联
+	$ git branch --set-upstream branch-name origin/branch-name
+
+新建标签
+	$ git tag <name>
+	$ git tag <name> <commit id>
+
+查看标签
+	$ git tag
+
+创建带说明的标签
+	$ git tag -a <name> -m "..." <commit id>
+
+创建PGP签名标签
+	$ git tag -s <name> -m "..." <commit id>
+
+查看标签说明文字和PGP签名信息
+	$ git show <name>
+
+删除标签
+	$ git tag -d v0.1
+
+推送标签到远程
+	$ git push origin <tagname>
+
+一次性推送全部尚未推送到远程的本地标签
+	$ git push origin --tags
+
+删除远程标签
+	$ git tag -d v0.9
+	$ git push origin :refs/tags/v0.9
+
+忽略特殊文件
+	编写.gitignore文件add并commit到版本库中
+	格式如下：
+	# Windows:
+    Thumbs.db
+    ehthumbs.db
+    Desktop.ini
+
+    # Python:
+    *.py[cod]
+    *.so
+    *.egg
+    *.egg-info
+    dist
+    build
+
+配置别名
+	$ git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
+搭建Git服务器
+	1.安装git
+		$ sudo apt-get install git
+	2.创建git用户
+		$ sudo adduser git
+	3.创建登入证书
+		把各用户的id_rsa.pub的公钥导入/homr/git/.ssh/authorized_keys文件中，一行一个
+	4.初始化Git库
+		$ sudo git init --bare sample.git
+		$ sudo chown -R git:git sample.git
+
+	5.禁用shell登入
+	    编辑/etc/passwd，找到：
+	    git:x:1001:1001:,,,:/home/git:/bin/bash
+	    改为：
+	    it:x:1001:1001:,,,:/home/git:/usr/bin/git-shell
